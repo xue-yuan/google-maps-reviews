@@ -6,3 +6,13 @@
 # Run
 
 `node main.js`
+
+```javascript
+// response format
+[
+  {
+    name: '...',
+    reviews: ['...', '...'], // up to 5 reviews(limit by google api)
+  },
+];
+```

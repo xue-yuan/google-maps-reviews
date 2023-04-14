@@ -13,13 +13,25 @@ export async function getGeoencoding(place) {
     });
 }
 
-export async function getNearbyPlaceID(lat, lng, searchType) {
-  return fetch(
-    `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=1500&type=${searchType}&key=${API_KEY}`
-  )
+export async function getNearbyPlaceID(
+  lat,
+  lng,
+  searchType,
+  searchRadius,
+  searchKeyword
+) {
+  let url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${searchRadius}&type=${searchType}&key=${API_KEY}`;
+  if (searchKeyword) {
+    url += `&keyword=${searchKeyword}`;
+  }
+
+  return fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      return data.results.map((result) => result.place_id);
+      return data.results.map((result) => ({
+        name: result.name,
+        id: result.place_id,
+      }));
     });
 }
 
@@ -29,6 +41,6 @@ export async function getPlaceDetail(placeID) {
   )
     .then((response) => response.json())
     .then((data) => {
-      return data.result.reviews.map((review) => review.text);
+      return data.result.reviews?.map((review) => review?.text) || [];
     });
 }
